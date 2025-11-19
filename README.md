@@ -21,12 +21,6 @@ uid=1001(ec2-user) gid=1001(ec2-user) groups=1001(ec2-user),990(docker)
 commands 
 docker ps -> All running containers
 docker ps -a -> All containers
-
-Images
-AMI = OS + System Packages + App run time + App code + App libraries
-docker image = Bare minimum OS + System Packages + App run time + App code + App libraries
-image is static, container is running instace of image.
-
 docker pull nginx -> pulling the image from docker hub
 docker pull nginx:perl -> pull specific version, default is latest
 docker images -> shows images stored locally
@@ -37,6 +31,13 @@ docker stop container-id
 docker rm container-id
 docker rm container-id -f (force remove running container)
 docker rmi container-id
+
+Images
+AMI = OS + System Packages + App run time + App code + App libraries
+docker image = Bare minimum OS + System Packages + App run time + App code + App libraries
+image is static, container is running instace of image.
+
+
 
 
 
