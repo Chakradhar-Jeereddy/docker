@@ -52,6 +52,11 @@ docker inspect container-id
 to inspect image
 docker inspect image
 
+We can't remove an image being used by container without force
+After force removal of image, container still remains because, it doesn't need image after creation, it stores its own filesystem layer
+Find the container using the image
+docker ps -a --filter ancestor=nginx or imageid
+
 Images
 AMI = OS + System Packages + App run time + App code + App libraries
 docker image = Bare minimum OS + System Packages + App run time + App code + App libraries
@@ -83,7 +88,8 @@ The push refers to repository [docker.io/chakradhar06/from]
 tag does not exist: chakradhar06/from:latest
 
 Add tag
-docker tag from:latest chakradhar05/from:latest
+docker tag from:latest chakradhar05/from:latest  (to push in central repo we need to tag the image)
+docker tag image:version <username>/<image_name>:<version>
 docker push docker.io/chakradhar05/from:latest
 The push refers to repository [docker.io/chakradhar05/from]
 82c710a74610: Pushed
@@ -123,6 +129,10 @@ Instruction in CMD should run the container infinite time. THe command we are gi
 CMD -> Instruction used to start the container
 RUN -> these instructions executes at the time of image building
 CMD - these instructions executes at the time of container startup
+TO check if process is running in container use
+docker top container_id
+docker exec container_id curl -I http://localhost
+docker logs container_id
 
 Image can have multiple run instructions
 CMD should be only one. if you give multiple CMD only last one is considered.
@@ -131,19 +141,22 @@ LABELS
 ===
 Adds the metadata to images, used for filtering
 docker images -f "label=trainer=shivkumar"
+FROM almalinux:9
+LABEL course=k8s \
+      grade=2 
 
 EXPOSE
 ===
-it will not change any functionality to the image/container.
-
-EXPOSE 80/tcp
+it will not add any functionality to the image/container, it provides information about ports used by container
+EXPOSE <port-number>/<protocal> it will not open the port, just for infomration.
+docker inspect container_id
 
 COPY
 ===
 FROM nginx
 RUN rm -rf /usr/share/nginx/nginx.html
 COPY nginx.html /usr/share/nginx/nginx.html
-COPY qi/ /usr/share/nginx/
+Copies the files from workspace to the container.
 
 ENV
 ===
@@ -151,11 +164,26 @@ ENV KEY=VALUE
 ENV COURSE="DOCKER" \
     TRAINER="CHAKRA" \
     DURATION="10HRS" \
+These are accessed from inside the container in the applications
 
 ADD
 ===
-ADD us also like COPY
-It can directly fech from internet not only from workspace
+ADD is also like COPY
+It can directly fetch from internet not only from workspace
+It can untar the file directly into image
+
+ENTRYPOINT
+=========
+CMD instructions can be overwritten
+docker run -d env:v1 ping facebook.com
+ETNRYPOINT can't be overwritten, if you try it will go and append and it will lead to failure.
+To test run - docker run cfdbf35252df ping facebook.com
+
+BEST PRACRISE
+==========
+CMD can be used to supply arg to entrypoint, we can overwrite the default args at runtime.
+
+
 
 
 
