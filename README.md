@@ -183,6 +183,59 @@ BEST PRACRISE
 ==========
 CMD can be used to supply arg to entrypoint, we can overwrite the default args at runtime.
 
+WORKDIR
+==========
+Creates a directory and switch to it. No need to use change directory(cd)
+
+ARG
+=====
+ARG can be used as first instruction to pass arguments
+Dockerfile
+ARG VERSION
+FROM almalinux:${VERSION:-9}
+docker build  -t arg:v1 --build-arg VERSION=8 .
+
+ARG VS ENV
+==========
+1 . ENV is used to supply the key value pairs for the container/run time
+2 . ARGS is used to supply the key value pairs during image build time
+3. ARG can't be accessed inside the container
+4. ENV can be accessed inside the container
+5. We can reuse the arguments as environment variables inside container
+
+ARG VERSION
+FROM almalinux:${VERSION:-9}
+ARG course="chakra" \
+    subj="docker"
+***ENV course=${course} \***
+    subj=${subj}
+CMD [ "ping","google.com" ]
+
+ONBUILD
+============
+FROM chakradhar05/onbuild:latest
+RUN dnf install nginx -y
+RUN rm -rf /usr/share/nginx/html/index.html
+ONBUILD COPY index.html /usr/share/nginx/html/index.html
+CMD [ "nginx","-g","daemon off;" ]
+
+=> create the image, next time if someone try to build this image, the onbuild instructions will get executed and they have to supply
+   the index.html file
+   
+TEST case
+====
+docker build --no-cache --progress=plain -t onbuild .
+Build an image using the above as base image
+FROM onbuild:latest
+docker build --no-cache --progress=plain -t test .
+
+#6 [2/2] ONBUILD COPY index.html /usr/share/nginx/html/index.html
+#6 DONE 0.0s
+
+
+
+
+
 
 
 
