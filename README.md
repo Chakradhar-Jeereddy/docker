@@ -47,7 +47,26 @@ docker run -d  -p <host-port>:<container-port> nginx
 docker run -d -p 80:80 nginx
 docker run -d -p 8080:80 nginx
 ```
+Use of --no-cache during the build
+==
+- Think of Docker build like cooking
+- Normal docker build (with cache)
+- Imagine you cooked rice and curry yesterday.
+- Today you cook again:
+- Rice is already cooked and kept in the fridge
+- Curry is already prepared
+- You just reheat them and eat
+- Fast
+- But rice/curry may not be fresh
 
+- docker build (with no cache)
+- You throw away yesterday’s food
+- Buy fresh vegetables
+- Cook everything from scratch
+- Takes more time
+- But food is 100% fresh
+- Sec team asks to rebuild image with latest system packages and dependencies
+- Make sure nothing old remains.
 ***To get into container***
 ```
 docker exec -it container-id bash
@@ -229,6 +248,15 @@ CMD [ "ping","google.com" ]
 ```
 ONBUILD
 ============
+- Imagine you send someone a ready-made cake base.
+- On the cake box, you paste a note:
+- When you use this cake base,
+➜ add cream
+➜ add fruits
+➜ then bake”
+- You don’t do these steps now.
+- They happen later, when someone else uses your cake base.
+- That sticky note = ONBUILD
 ```
 FROM chakradhar05/onbuild:latest
 RUN dnf install nginx -y
