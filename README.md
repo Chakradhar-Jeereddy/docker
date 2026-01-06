@@ -1,9 +1,11 @@
 # docker
-https://joindevops.medium.com/why-containerization-is-popular-how-to-understand-the-advantages-55261a17517c
--For running container we need docker engine
+- https://joindevops.medium.com/why-containerization-is-popular-how-to-understand-the-advantages-55261a17517c
+- Docker engine is required to run containers
 
-Installation
-https://docs.docker.com/engine/install/rhel/
+Installation link
+==
+- https://docs.docker.com/engine/install/rhel/
+- Commands
 ```
 sudo dnf -y install dnf-plugins-core
 sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
@@ -12,16 +14,18 @@ sudo systemctl start docker
 sudo systemctl enable docker
 sudo systemctl status docker
 ```
-A docker group is created, only users inside docker group and root user can access docker cli.
-Add ec2 user to docker group
+- After the installation, a docker group is created, only users inside docker group and root user can access docker cli.
+- Add ec2-user to docker group to run the commands from that user.
 ```
 sudo usermod ec2-user -aG docker
 id ec2-user
 uid=1001(ec2-user) gid=1001(ec2-user) groups=1001(ec2-user),990(docker)
 ```
-Docker home repository is /var/lib/docker
+- Docker home repository is /var/lib/docker
 
-commands 
+commands
+==
+```
 docker ps -> All running containers
 docker ps -a -> All containers
 docker pull nginx -> pulling the image from docker hub
@@ -42,52 +46,54 @@ Port forwarding (first reaches host and then container), host port is unique
 docker run -d  -p <host-port>:<container-port> nginx
 docker run -d -p 80:80 nginx
 docker run -d -p 8080:80 nginx
+```
 
-To get into container
+***To get into container***
+```
 docker exec -it container-id bash
 it - interactive mode
-
-to inspect container
+```
+***To inspect container***
+```
 docker inspect container-id
-to inspect image
+- To inspect image
 docker inspect image
+```
+***Note:*** We can't remove an image being used by container without force option.
+            - After force removal of image, container still remains because, it doesn't need image after creation, it stores its own filesystem layer
+            - Find the container using the image
+            - docker ps -a --filter ancestor=nginx or imageid
 
-We can't remove an image being used by container without force
-After force removal of image, container still remains because, it doesn't need image after creation, it stores its own filesystem layer
-Find the container using the image
-docker ps -a --filter ancestor=nginx or imageid
-
-Images
-AMI = OS + System Packages + App run time + App code + App libraries
-docker image = Bare minimum OS + System Packages + App run time + App code + App libraries
-image is static, container is running instace of image.
+***Images:*** AMI = OS + System Packages + App run time + App code + App libraries
+              docker image = Bare minimum OS + System Packages + App run time + App code + App libraries
+              image is static, container is running instace of image.
 
 
-Dockerfile: Instructions to build custom docker images.
-URL: https://docs.docker.com/reference/dockerfile/
-Docker file references
+***Dockerfile:*** Instructions to build custom docker images.
+                - URL: https://docs.docker.com/reference/dockerfile/
+                - Docker file references
 
 FROM
-######################
-Refers to base OS of the image. The dockerfile first instruction should be FROM
+==
+Refers to base OS of the image. The dockerfile first instruction should start with FROM.
 FROM almalinux:9
-
-docker build -t from .   (if we don't give version tag it by default takes latest)
+docker build -t <name> .   (if we don't give version tag it by default takes latest)
 docker images
 IMAGE          ID             DISK USAGE   CONTENT SIZE   EXTRA
 from:latest    0c64b8cdb5a0        272MB         69.7MB
 
 PUSH
-#######################
+==
 docker login -u joindevops
 Login succeeded
 docker push <URL>/<Username>/<image-name>:<version> (this format is to bring uniquness)
-docker push docker.io/chakradhar06/from
+docker push docker.io/chakradhar06/<name>
 Using default tag: latest
-The push refers to repository [docker.io/chakradhar06/from]
+The push refers to repository [docker.io/chakradhar06/<name>]
 tag does not exist: chakradhar06/from:latest
 
 Add tag
+==
 docker tag from:latest chakradhar05/from:latest  (to push in central repo we need to tag the image)
 docker tag image:version <username>/<image_name>:<version>
 docker push docker.io/chakradhar05/from:latest
@@ -96,12 +102,10 @@ The push refers to repository [docker.io/chakradhar05/from]
 fc156b96a2c0: Pushed
 latest: digest: sha256:0c64b8cdb5a0e0c2dd955745b840098cef3f946d8f4bcd4ced580c188a1f264e size: 855
 
-If you are pulling the image, first it will check whether it is available in local repo.
-If not, it will pull from central repo.
-
+***Note:*** If you are pulling the image, first it will check whether it is available in local repo.
+            If not, it will pull from central repo.
 docker rm -f `docker ps -a -q`
 docker rmi -f images `docker images -q`
-
 docker pull joindevops/from
 
 RUN
@@ -125,17 +129,18 @@ CMD ["nginx","-g","daemon off"]
 FROM run:v1
 CMD ["nginx","-g","daemon off"]
 
-Instruction in CMD should run the container infinite time. THe command we are giving inside CMD should run in foreground, then we should take it into background.
-CMD -> Instruction used to start the container
-RUN -> these instructions executes at the time of image building
-CMD - these instructions executes at the time of container startup
-TO check if process is running in container use
-docker top container_id
-docker exec container_id curl -I http://localhost
-docker logs container_id
+- Instruction in CMD should run the container infinite time. THe command we are giving inside CMD should run in foreground, then we should take it into background.
 
-Image can have multiple run instructions
-CMD should be only one. if you give multiple CMD only last one is considered.
+- CMD -> Instruction used to start the container
+- RUN -> these instructions executes at the time of image building
+- CMD - these instructions executes at the time of container startup
+- TO check if process is running in container use
+  docker top container_id
+  docker exec container_id curl -I http://localhost
+  docker logs container_id
+
+***Note:*** Image can have multiple run instructions
+           - CMD should be only one. if you give multiple CMD only last one is considered.
 
 LABELS
 ===
