@@ -76,14 +76,16 @@ docker inspect image
 FROM
 ==
 Refers to base OS of the image. The dockerfile first instruction should start with FROM.
+```
 FROM almalinux:9
 docker build -t <name> .   (if we don't give version tag it by default takes latest)
 docker images
 IMAGE          ID             DISK USAGE   CONTENT SIZE   EXTRA
 from:latest    0c64b8cdb5a0        272MB         69.7MB
-
+```
 PUSH
 ==
+```
 docker login -u joindevops
 Login succeeded
 docker push <URL>/<Username>/<image-name>:<version> (this format is to bring uniquness)
@@ -91,9 +93,10 @@ docker push docker.io/chakradhar06/<name>
 Using default tag: latest
 The push refers to repository [docker.io/chakradhar06/<name>]
 tag does not exist: chakradhar06/from:latest
-
+```
 Add tag
 ==
+```
 docker tag from:latest chakradhar05/from:latest  (to push in central repo we need to tag the image)
 docker tag image:version <username>/<image_name>:<version>
 docker push docker.io/chakradhar05/from:latest
@@ -107,9 +110,10 @@ latest: digest: sha256:0c64b8cdb5a0e0c2dd955745b840098cef3f946d8f4bcd4ced580c188
 docker rm -f `docker ps -a -q`
 docker rmi -f images `docker images -q`
 docker pull joindevops/from
-
+```
 RUN
 ===
+```
 Run instruction is used to configure the image. like installing packages, configurations, creating user, etc.
 FROM almalinux:9 
 RUN dnf install nginx -y
@@ -117,10 +121,11 @@ RUN dnf install nginx -y
 cd RUN/Dockerfile
 docker build -t --nocache --progress=plain run:v1 .
 docker push 
-
+```
 
 CMD
 ===
+```
 reffering the base image
 configuring 
 CMD ["executable", "params1", "params2"]
@@ -141,15 +146,16 @@ CMD ["nginx","-g","daemon off"]
 
 ***Note:*** Image can have multiple run instructions
            - CMD should be only one. if you give multiple CMD only last one is considered.
-
+```
 LABELS
 ===
+```
 Adds the metadata to images, used for filtering
 docker images -f "label=trainer=shivkumar"
 FROM almalinux:9
 LABEL course=k8s \
       grade=2 
-
+```
 EXPOSE
 ===
 it will not add any functionality to the image/container, it provides information about ports used by container
@@ -158,18 +164,21 @@ docker inspect container_id
 
 COPY
 ===
+```
 FROM nginx
 RUN rm -rf /usr/share/nginx/nginx.html
 COPY nginx.html /usr/share/nginx/nginx.html
 Copies the files from workspace to the container.
-
+```
 ENV
 ===
+```
 ENV KEY=VALUE
 ENV COURSE="DOCKER" \
     TRAINER="CHAKRA" \
     DURATION="10HRS" \
-These are accessed from inside the container in the applications
+```
+- These are accessed from inside the container in the applications
 
 ADD
 ===
@@ -179,11 +188,12 @@ It can untar the file directly into image
 
 ENTRYPOINT
 =========
-CMD instructions can be overwritten
-docker run -d env:v1 ping facebook.com
-ETNRYPOINT can't be overwritten, if you try it will go and append and it will lead to failure.
+- CMD instructions can be overwritten
+- docker run -d env:v1 ping facebook.com
+- ETNRYPOINT can't be overwritten, if you try it will go and append and it will lead to failure.
+```
 To test run - docker run cfdbf35252df ping facebook.com
-
+```
 BEST PRACRISE
 ==========
 CMD can be used to supply arg to entrypoint, we can overwrite the default args at runtime.
@@ -195,11 +205,12 @@ Creates a directory and switch to it. No need to use change directory(cd)
 ARG
 =====
 ARG can be used as first instruction to pass arguments
+```
 Dockerfile
 ARG VERSION
 FROM almalinux:${VERSION:-9}
 docker build  -t arg:v1 --build-arg VERSION=8 .
-
+```
 ARG VS ENV
 ==========
 1 . ENV is used to supply the key value pairs for the container/run time
@@ -207,7 +218,7 @@ ARG VS ENV
 3. ARG can't be accessed inside the container
 4. ENV can be accessed inside the container
 5. We can reuse the arguments as environment variables inside container
-
+```
 ARG VERSION
 FROM almalinux:${VERSION:-9}
 ARG course="chakra" \
@@ -215,20 +226,22 @@ ARG course="chakra" \
 ***ENV course=${course} \***
     subj=${subj}
 CMD [ "ping","google.com" ]
-
+```
 ONBUILD
 ============
+```
 FROM chakradhar05/onbuild:latest
 RUN dnf install nginx -y
 RUN rm -rf /usr/share/nginx/html/index.html
 ONBUILD COPY index.html /usr/share/nginx/html/index.html
 CMD [ "nginx","-g","daemon off;" ]
-
+```
 => create the image, next time if someone try to build this image, the onbuild instructions will get executed and they have to supply
    the index.html file
    
 TEST case
 ====
+```
 docker build --no-cache --progress=plain -t onbuild .
 Build an image using the above as base image
 FROM onbuild:latest
@@ -236,7 +249,7 @@ docker build --no-cache --progress=plain -t test .
 
 #6 [2/2] ONBUILD COPY index.html /usr/share/nginx/html/index.html
 #6 DONE 0.0s
-
+```
 
 
 
