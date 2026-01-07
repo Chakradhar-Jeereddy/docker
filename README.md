@@ -50,6 +50,7 @@ docker run -d -p 8080:80 nginx
 Use of --no-cache during the build
 ==
 - Think of Docker build like cooking
+  
 - Normal docker build (with cache)
 - Imagine you cooked rice and curry yesterday.
 - Today you cook again:
@@ -78,14 +79,15 @@ docker inspect container-id
 - To inspect image
 docker inspect image
 ```
-***Note:*** We can't remove an image being used by container without force option.
-            - After force removal of image, container still remains because, it doesn't need image after creation, it stores its own filesystem layer
+***Note:*** - We can't remove an image being used by container even with force option, when container is running.
+            - Stop the container and force remove the image.
+            - After force removal of image, container still remains because, it doesn't need image after creation, it stores in its own filesystem layer.
             - Find the container using the image
-            - docker ps -a --filter ancestor=nginx or imageid
+            - docker ps -a --filter ***ancestor=nginx** or imageid
 
-***Images:*** AMI = OS + System Packages + App run time + App code + App libraries
-              docker image = Bare minimum OS + System Packages + App run time + App code + App libraries
-              image is static, container is running instace of image.
+***Images:*** - AMI = OS + System Packages + App run time + App code + App libraries
+              - Docker image = Bare minimum OS + System Packages + App run time + App code + App libraries
+              - Image is static, container is running instace of image.
 
 
 ***Dockerfile:*** Instructions to build custom docker images.
