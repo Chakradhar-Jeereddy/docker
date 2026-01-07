@@ -281,8 +281,96 @@ docker build --no-cache --progress=plain -t test .
 #6 DONE 0.0s
 ```
 
+Docker cache
+==
+- It exists in docker's data directory
+    - /var/lib/docker/
+| Directory    | Purpose                         |
+|-------------|----------------------------------|
+| overlay2/   | Image layers (build cache)       |
+| containers/ | Container data                  |
+| images/     | Image metadata                  |
+| volumes/    | Volume data                     |
+| buildkit/   | Build cache (modern builds)      |
+| network/    | Network configs                 |
 
+- Cache is stored in /var/lib/docker/overlay2/ (old)
+- Cache is stored in /var/lib/docker/buildkit/ (new)
 
+Check space usage
+==
+**docker system df**
+```
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          3         0         771.8MB   224.9MB (29%)
+Containers      0         0         0B        0B
+Local Volumes   0         0         0B        0B
+Build Cache     13        0         475.7MB   40.09MB
+```
+
+Docker engine details
+==
+***docker info**
+```
+Client: Docker Engine - Community
+ Version:    29.1.3
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  buildx: Docker Buildx (Docker Inc.)
+    Version:  v0.30.1
+    Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+  compose: Docker Compose (Docker Inc.)
+    Version:  v5.0.1
+    Path:     /usr/libexec/docker/cli-plugins/docker-compose
+
+Server:
+ Containers: 0
+  Running: 0
+  Paused: 0
+  Stopped: 0
+ Images: 3
+ Server Version: 29.1.3
+ Storage Driver: overlayfs
+  driver-type: io.containerd.snapshotter.v1
+ Logging Driver: json-file
+ Cgroup Driver: systemd
+ Cgroup Version: 2
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+ CDI spec directories:
+  /etc/cdi
+  /var/run/cdi
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: dea7da592f5d1d2b7755e3a161be07f43fad8f75
+ runc version: v1.3.4-0-gd6d73eb8
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: builtin
+  cgroupns
+ Kernel Version: 5.14.0-362.18.1.el9_3.x86_64
+ Operating System: Red Hat Enterprise Linux 9.3 (Plow)
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 2
+ Total Memory: 709.5MiB
+ Name: ip-172-31-0-53.ec2.internal
+ ID: 4ae7cc3b-3d4f-40af-bc03-12d4c52ec1c0
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Experimental: false
+ Insecure Registries:
+  ::1/128
+  127.0.0.0/8
+ Live Restore Enabled: false
+ Firewall Backend: iptables
+```
 
 
 
