@@ -166,7 +166,11 @@ CMD ["nginx","-g","daemon off"]
   docker logs container_id
 
 ***Note:*** Image can have multiple run instructions
-           - CMD should be only one. if you give multiple CMD only last one is considered.
+- CMD should be only one. if you give multiple CMD only last one is considered.
+- 1 warning found (use docker --debug to expand):
+- MultipleInstructionsDisallowed:
+- Multiple CMD instructions should not be used in the same stage because only the last one will be used (line 3)
+
 ```
 LABELS
 ===
