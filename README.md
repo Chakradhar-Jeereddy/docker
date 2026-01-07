@@ -235,6 +235,14 @@ Dockerfile
 ARG VERSION
 FROM almalinux:${VERSION:-9}
 docker build  -t arg:v1 --build-arg VERSION=8 .
+
+ARG VERSION
+FROM almalinux:${VERSION:-6}
+ARG VERSION                      # Reuse the ARG to use it in later steps
+ENV version=${VERSION}
+RUN echo "$VERSION"
+CMD ["sleep","1000"]
+
 ```
 ARG VS ENV
 ==========
