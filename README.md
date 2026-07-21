@@ -207,9 +207,10 @@ ENV COURSE="DOCKER" \
 
 ADD
 ===
-ADD is also like COPY
+ADD is also like COPY, unpredictable
 It can directly fetch from internet not only from workspace
-It can untar the file directly into image
+It can untar the file directly into image if the tar file is kept locally.
+Only .tar file is extracted, not zip files.
 
 ENTRYPOINT
 =========
